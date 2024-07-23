@@ -6,7 +6,61 @@ const projects = [
     {
         wallet: "phantom",
         name: "Token Launch (ICO)",
-        status: "In escrow",
+        status: "In Escrow",
+        role: "Payer",
+        amount: 1200,
+        token: "SOL",
+        date: "2024-07-31"
+    },
+    {
+        wallet: "metamask",
+        name: "Smart Contract Deploy",
+        status: "Complete",
+        role: "Payer",
+        amount: 3,
+        token: "ETH",
+        date: "2024-07-22"
+    },
+    {
+        wallet: "phantom",
+        name: "Token Launch (ICO)",
+        status: "In Escrow",
+        role: "Payer",
+        amount: 1200,
+        token: "SOL",
+        date: "2024-07-31"
+    },
+    {
+        wallet: "metamask",
+        name: "Smart Contract Deploy",
+        status: "Complete",
+        role: "Payer",
+        amount: 3,
+        token: "ETH",
+        date: "2024-07-22"
+    },
+    {
+        wallet: "phantom",
+        name: "Token Launch (ICO)",
+        status: "In Escrow",
+        role: "Payer",
+        amount: 1200,
+        token: "SOL",
+        date: "2024-07-31"
+    },
+    {
+        wallet: "metamask",
+        name: "Smart Contract Deploy",
+        status: "Complete",
+        role: "Payer",
+        amount: 3,
+        token: "ETH",
+        date: "2024-07-22"
+    },
+    {
+        wallet: "phantom",
+        name: "Token Launch (ICO)",
+        status: "In Escrow",
         role: "Payer",
         amount: 1200,
         token: "SOL",
@@ -37,32 +91,42 @@ const Dashboard = () => {
                         <Button colorScheme="white" px="8">+ Create</Button>
                     </Flex>
                 </Flex>
-                <TableContainer border={`1px solid #343434`} borderRadius={'8'}>
+                <TableContainer border={`1px solid #514f56`} borderRadius={'8'}>
                     <Table>
-                        <Thead>
+                        <Thead bg="#414048">
                             <Tr>
                                 <Th>Escrow Project</Th>
-                                <Th borderInline={`1px solid #343434`}>Status</Th>
+                                <Th borderInline={`1px solid #514f56`}>Status</Th>
                                 <Th>Role</Th>
-                                <Th borderInline={`1px solid #343434`}>Amount</Th>
-                                <Th>Date</Th>
-                                <Th width={20}></Th>
+                                <Th borderInline={`1px solid #514f56`}>Amount</Th>
+                                <Th width={36}>Date</Th>
+                                <Th width={24}></Th>
                             </Tr>
                         </Thead>
-                        <Tbody>
+                        <Tbody bg="#292730">
                             {projects.map((project, index) => (
-                                <Tr key={index}>
-                                    <Td>
+                                <Tr key={index} _hover={{
+                                    bg: "#5454fb"
+                                }}>
+                                    <Td borderBottom={"1px solid #514f56"}>
                                         <Flex align={'center'} gap={'4'}>
                                             <Image src={`/static/images/${project.wallet}.png`} alt={project.wallet} width={10}></Image>
                                             <Text>{project.name}</Text>
                                         </Flex>
                                     </Td>
-                                    <Td borderInline={`1px solid #343434`}>{project.status}</Td>
-                                    <Td>{project.role}</Td>
-                                    <Td borderInline={`1px solid #343434`}>{project.amount} {project.token}</Td>
-                                    <Td>{new Date(project.date).toLocaleDateString("en-GB")}</Td>
-                                    <Td><Tag colorScheme="gray" size="lg" borderRadius={16}>View</Tag></Td>
+                                    <Td borderInline={`1px solid #514f56`} borderBottom={"1px solid #514f56"}>
+                                        <Tag colorScheme={
+                                            project.status.toLowerCase() == "complete"
+                                                ? "green"
+                                                : project.status.toLowerCase() == "in escrow"
+                                                ? "orange"
+                                                : "white"
+                                        } size="lg" borderRadius={16}>{project.status}</Tag>
+                                    </Td>
+                                    <Td borderBottom={"1px solid #514f56"}>{project.role}</Td>
+                                    <Td borderInline={`1px solid #514f56`} borderBottom={"1px solid #514f56"}>{project.amount} {project.token}</Td>
+                                    <Td borderBottom={"1px solid #514f56"}>{new Date(project.date).toLocaleString("en-GB", {dateStyle: "short"})}</Td>
+                                    <Td borderBottom={"1px solid #514f56"}><Tag colorScheme="gray" size="lg" borderRadius={16}>View</Tag></Td>
                                 </Tr>
                             ))}
                         </Tbody>
