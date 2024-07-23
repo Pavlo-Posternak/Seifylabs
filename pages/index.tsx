@@ -1,49 +1,29 @@
 import * as React from "react";
-import type { NextPage } from "next";
 import Image from "next/image";
 import {
   Container,
   Box,
   Stack,
-  HStack,
   ButtonGroup,
-  Button,
   Icon,
-  Heading,
   Text,
   Wrap,
   Tag,
   useClipboard,
-  IconButton,
-  VStack,
-  Flex,
+  VStack
 } from "@chakra-ui/react";
 import { SEO } from "components/seo/seo";
 
 import { FallInPlace } from "components/motion/fall-in-place";
 import { Hero } from "components/hero";
-import { Link, Br } from "@saas-ui/react";
+import { Br } from "@saas-ui/react";
 import { Em } from "components/typography";
-import { NextjsLogo, ChakraLogo } from "components/logos";
 import {
   FiArrowRight,
-  FiBox,
   FiShield, 
   FiClock, 
   FiDollarSign,
   FiCheck,
-  FiCode,
-  FiCopy,
-  FiFlag,
-  FiGrid,
-  FiSearch,
-  FiSliders,
-  FiSmile,
-  FiTerminal,
-  FiThumbsUp,
-  FiToggleLeft,
-  FiTrendingUp,
-  FiUserPlus,
 } from "react-icons/fi";
 import { Features } from "components/features";
 import { BackgroundGradient } from "components/gradients/background-gradient";
@@ -52,7 +32,6 @@ import { Pricing } from "components/pricing/pricing";
 
 import { ButtonLink } from "components/button-link/button-link";
 import { Testimonial, Testimonials } from "components/testimonials";
-
 import faq from "data/faq";
 import testimonials from "data/testimonials";
 import pricing from "data/pricing";
@@ -60,16 +39,21 @@ import pricing from "data/pricing";
 import {
   Highlights,
   HighlightsItem,
-  HighlightsTestimonialItem,
 } from "components/highlights";
+import {
+  AnnouncementBanner,
+  AnnouncementBannerProps
+} from "components/announcement-banner";
 
-const Home: NextPage = () => {
+const Home: React.FC<{announcement: AnnouncementBannerProps}> = (props) => {
+  const { announcement } = props;
   return (
     <Box>
       <SEO
         title="SeifyLabs"
         description="The Escrow platform for the crypto community"
       />
+      <AnnouncementBanner {...announcement} />
       <Box>
         <HeroSection />
 
