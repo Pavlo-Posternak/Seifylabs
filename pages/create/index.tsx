@@ -1,6 +1,6 @@
 import { CopyIcon } from "@chakra-ui/icons";
-import { Button, Container, Flex, Heading, HStack, Image, Input, Modal, ModalCloseButton, ModalContent, ModalOverlay, Text, Textarea, Tooltip } from "@chakra-ui/react";
-import { DateRangePicker, DateRangePickerCalendar } from "@saas-ui/date-picker";
+import { Box, Button, Container, Flex, Heading, HStack, Image, Input, Modal, ModalCloseButton, ModalContent, ModalOverlay, Text, Textarea, Tooltip } from "@chakra-ui/react";
+import { CalendarDate, DatePicker, DatePickerCalendar, DatePickerTimeField, DateRangePicker, DateRangePickerCalendar } from "@saas-ui/date-picker";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 
@@ -141,22 +141,23 @@ const CreateProject = () => {
                         </Flex>
                     </Flex>
                 ) : (
-                    <Flex direction={`column`} alignItems={"center"} gap={16} textAlign={"center"} mt={'16'}>
+                    <Flex direction={`column`} alignItems={"center"} gap={10} textAlign={"center"} mt={'4'}>
                         <Heading size={'xl'}>Project Details</Heading>
                         <Flex direction={'column'} alignItems={'start'} gap={4} minW={'640px'}>
                             <Flex direction={'column'} alignItems={'start'} gap={2}>
                                 <Text fontSize={'2xl'}>Deliverables</Text>
                                 <Text fontSize={'lg'} mt={'-2'}>What should payee deliver</Text>
-                                <Textarea h={'300px'} w={'640px'}></Textarea>
+                                <Textarea h={'200px'} w={'640px'}></Textarea>
                             </Flex>
                             <Flex direction={'column'} alignItems={'start'} gap={2}>
                                 <Text fontSize={'2xl'}>Timeline</Text>
                                 <Text fontSize={'lg'} mt={'-2'}>By when should payee deliver the work?</Text>
-                                <DateRangePicker onChange={(v) => {
-                                    console.log("date range", v)
-                                }}>
-                                    <DateRangePickerCalendar />
-                                </DateRangePicker>
+                                <Box bg={'#171717'} p={4}>
+                                    <DatePicker>
+                                        <DatePickerCalendar />
+                                        <DatePickerTimeField />
+                                    </DatePicker>
+                                </Box>
                             </Flex>
                             
                             <Flex alignItems={"center"} justify={'end'} gap={4} w={'full'} mt={'8'}>
@@ -177,10 +178,10 @@ const CreateProject = () => {
                                     <Text fontSize={'2xl'}>Invite Payee</Text>
                                     <Text fontSize={'lg'} mt={'-2'}>Copy the link below and share with Payee</Text>
                                     <Flex alignItems={"center"} gap={2} border={`1px solid white`} borderRadius={'full'} py={1} px={5} my={6}>
-                                        <Text>{`seifylabs.io/project/${link}`}</Text>
+                                        <Text>{`${window.location.origin}/project/${link}`}</Text>
                                         <Tooltip hasArrow label="Copied" isOpen={tooltip} bg={'black'} placement="top" borderRadius={6}>
                                             <CopyIcon color={'#8952e0'} cursor={'pointer'} onClick={() => {
-                                                navigator.clipboard.writeText(`seifylabs.io/project/${link}`);
+                                                navigator.clipboard.writeText(`${window.location.origin}/project/${link}`);
                                                 setTooltip(true);
                                                 setTimeout(() => setTooltip(false), 2000);
                                             }}/>
