@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Box, Button, Container, Flex, Image, Table, TableContainer, Tag, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { SearchInput } from "@saas-ui/react";
+import { ButtonLink } from "components/button-link";
 
 const projects = [
     {
@@ -51,7 +52,7 @@ const projects = [
     {
         wallet: "metamask",
         name: "Smart Contract Deploy",
-        status: "Complete",
+        status: "Pending",
         role: "Payer",
         amount: 3,
         token: "ETH",
@@ -88,7 +89,7 @@ const Dashboard = () => {
                     </Flex>
                     <Flex direction="row" alignItems="center" gap="8">
                         <SearchInput />
-                        <Button colorScheme="white" px="8">+ Create</Button>
+                        <ButtonLink href={"/create"} colorScheme="white" px="8">+ Create</ButtonLink>
                     </Flex>
                 </Flex>
                 <TableContainer border={`1px solid #514f56`} borderRadius={'8'}>
@@ -106,7 +107,7 @@ const Dashboard = () => {
                         <Tbody bg="#292730">
                             {projects.map((project, index) => (
                                 <Tr key={index} _hover={{
-                                    bg: "#5454fb"
+                                    bg: "#7854fb"
                                 }}>
                                     <Td borderBottom={"1px solid #514f56"}>
                                         <Flex align={'center'} gap={'4'}>
@@ -116,12 +117,16 @@ const Dashboard = () => {
                                     </Td>
                                     <Td borderInline={`1px solid #514f56`} borderBottom={"1px solid #514f56"}>
                                         <Tag colorScheme={
-                                            project.status.toLowerCase() == "complete"
-                                                ? "green"
-                                                : project.status.toLowerCase() == "in escrow"
-                                                ? "orange"
-                                                : "white"
-                                        } size="lg" borderRadius={16}>{project.status}</Tag>
+                                                project.status.toLowerCase() == "complete"
+                                                    ? "green"
+                                                    : project.status.toLowerCase() == "in escrow"
+                                                    ? "orange"
+                                                    : "gray"
+                                            }
+                                            variant={`solid`}
+                                            size="lg" 
+                                            borderRadius={`full`}
+                                        >{project.status}</Tag>
                                     </Td>
                                     <Td borderBottom={"1px solid #514f56"}>{project.role}</Td>
                                     <Td borderInline={`1px solid #514f56`} borderBottom={"1px solid #514f56"}>{project.amount} {project.token}</Td>
