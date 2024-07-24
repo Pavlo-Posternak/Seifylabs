@@ -1,5 +1,4 @@
 import * as React from "react";
-import Image from "next/image";
 import {
   Container,
   Box,
@@ -10,7 +9,8 @@ import {
   Wrap,
   Tag,
   useClipboard,
-  VStack
+  VStack,
+  Image
 } from "@chakra-ui/react";
 import { SEO } from "components/seo/seo";
 
@@ -96,8 +96,8 @@ const HeroSection: React.FC = () => {
           >
             <FallInPlace delay={0.8}>
             <div style={{ paddingTop: '16px', paddingBottom: '28px', display: 'flex', gap: '12px' }}>
-              <Image src="/static/images/phantom.png" alt="Phantom" height={38} width={55} />
-              <Image src="/static/images/MetaMask.png" alt="MetaMask" height={38} width={38} />
+              <Image src="/static/images/phantom.png" alt="Phantom" height={38} width={38}/>
+              <Image src="/static/images/metamask.png" alt="MetaMask" height={38} width={38}/>
             </div>
 
               <ButtonGroup spacing={4} alignItems="center">
@@ -139,12 +139,8 @@ const HeroSection: React.FC = () => {
               <Box overflow="hidden" height="100%">
                 <Image
                   src="/static/images/dashboard 1.svg"
-                  layout="fixed"
                   width={900}
-                  height={291}
                   alt="Screenshot of a ListPage in SeifyLabs"
-                  quality="75"
-                  priority
                 />
               </Box>
             </FallInPlace>

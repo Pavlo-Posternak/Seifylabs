@@ -28,7 +28,7 @@ export const Testimonial = ({
   ...rest
 }: TestimonialProps) => {
   return (
-    <Card position="relative" {...rest}>
+    <Card position="relative" {...rest} h={'full'}>
       <CardHeader display="flex" flexDirection="row" alignItems="center">
         <Avatar name={name} src={avatar} size="sm" bg="transparent" />
         <Stack spacing="1" ms="4">
