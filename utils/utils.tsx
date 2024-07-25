@@ -17,5 +17,8 @@ export type ProjectType = {
     deliverable: string,
     deadline: string,
     id: string,
-    status: string | null | undefined
+    status: string | null | undefined,
+    payer: string | null | undefined,
+    payee: string | null | undefined,
+    payeeAddress: string | null | undefined
 }

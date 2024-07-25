@@ -105,7 +105,7 @@ const Dashboard = () => {
                                             borderRadius={`full`}
                                         >{project.status ?? "Pending"}</Tag>
                                     </Td>
-                                    <Td borderBottom={"1px solid #514f56"}>{project.role ?? "Payer"}</Td>
+                                    <Td borderBottom={"1px solid #514f56"}>{"Payer"}</Td>
                                     <Td borderInline={`1px solid #514f56`} borderBottom={"1px solid #514f56"}>{project.amount} {project.token}</Td>
                                     <Td borderBottom={"1px solid #514f56"}>{`${project.deadline}`.substring(0, 10)}</Td>
                                     <Td borderBottom={"1px solid #514f56"}><Tag colorScheme="gray" size="lg" borderRadius={16}>View</Tag></Td>
