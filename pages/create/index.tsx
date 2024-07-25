@@ -1,16 +1,44 @@
 import { CopyIcon } from "@chakra-ui/icons";
 import { Box, Button, Container, Flex, Heading, HStack, Image, Input, Modal, ModalCloseButton, ModalContent, ModalOverlay, Text, Textarea, Tooltip } from "@chakra-ui/react";
-import { CalendarDate, DatePicker, DatePickerCalendar, DatePickerTimeField, DateRangePicker, DateRangePickerCalendar } from "@saas-ui/date-picker";
+import { DatePicker, DatePickerCalendar, DatePickerTimeField, DateValue } from "@saas-ui/date-picker";
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import db from "utils/firestore";
+import { collection, addDoc, getDocs } from "firebase/firestore"; 
+import { formatWalletAddress } from "utils/utils";
 
 const CreateProject = () => {
     const [ step, setStep ] = React.useState(1);
+    const [ title, setTitle ] = React.useState('');
+    const [ scope, setScope ] = React.useState('');
     const [ token, setToken ] = React.useState("USDC");
+    const [ wallet, setWallet ] = React.useState("Phantom");
+    const [ address, setAddress ] = React.useState('As26QHR2AiH6DBhaRnaJqvNBPLbbiUppbZm19sdbMZKx');
+    const [ balance, setBalance ] = React.useState(145)
     const [ amount, setAmount ] = React.useState(0);
+    const [ deliverable, setDeliverable ] = React.useState('');
+    const [ deadline, setDeadline ] = React.useState('');
     const [ link, setLink ] = React.useState('');
     const [ tooltip, setTooltip ] = React.useState(false);
+    const [ spinner, setSpinner ] = React.useState(false);
     const router = useRouter();
+
+    const submit = async () => {
+        setSpinner(true);
+        const docRef = await addDoc(collection(db, "projects"), {
+            title,
+            scope,
+            token,
+            wallet,
+            address,
+            amount,
+            deliverable,
+            deadline,
+            createdAt: new Date()
+        });
+        setSpinner(false);
+        setLink(docRef.id);
+    }
 
     return (
         <Container px="8" py="32" maxW="container.2xl">
@@ -26,12 +54,14 @@ const CreateProject = () => {
                         </Flex>
                     </Flex>
                 ) : step === 2 ? (
-                    <Flex direction={`column`} alignItems={"center"} gap={16} textAlign={"center"} mt={'36'}>
+                    <Flex direction={`column`} alignItems={"center"} gap={16} textAlign={"center"} mt={'24'}>
                         <Heading size={'xl'}>Project Details</Heading>
                         <Flex direction={'column'} alignItems={'start'} gap={2} minW={'640px'}>
+                            <Text fontSize={'2xl'}>Project Title</Text>
+                            <Input value={title} onChange={(e) => setTitle(e.target.value)}/>
                             <Text fontSize={'2xl'}>Scope of Work</Text>
                             <Text fontSize={'lg'} mt={'-2'}>Give details about the project</Text>
-                            <Textarea h={'300px'}></Textarea>
+                            <Textarea h={'300px'} value={scope} onChange={(e) => setScope(e.target.value)}/>
                             <Flex alignItems={"center"} justify={'end'} gap={4} w={'full'} mt={'8'}>
                                 <Button fontSize={'medium'} p={4} colorScheme="purple" onClick={() => setStep(1)}>{`<`} Previous</Button>
                                 <Button fontSize={'medium'} py={4} px={8} colorScheme="purple" onClick={() => setStep(3)}>Next {`>`}</Button>
@@ -94,7 +124,10 @@ const CreateProject = () => {
                                         p={4}
                                         colorScheme="whiteAlpha"
                                         variant="solid"
-                                        onClick={() => {}}
+                                        isActive={wallet === "Phantom"}
+                                        onClick={() => {
+                                            setWallet("Phantom")
+                                        }}
                                     ><Text fontSize={'lg'} color={'black'}>Phantom</Text></Button>
                                     <Button
                                         leftIcon={<Image src="/static/images/metamask.png" h={8} alt="MetaMask"/>} 
@@ -102,11 +135,14 @@ const CreateProject = () => {
                                         p={4}
                                         colorScheme="whiteAlpha"
                                         variant="solid"
-                                        onClick={() => {}}
+                                        isActive={wallet === "Metamask"}
+                                        onClick={() => {
+                                            setWallet("Metamask")
+                                        }}
                                     ><Text fontSize={'lg'} color={'black'}>Metamask</Text></Button>
                                 </HStack>
-                                <Text fontSize={'md'}>Wallet Connected: 8Y1s...YQ1Y</Text>
-                                <Text fontSize={'md'} color="#8952e0">{token} Balance: 145 {token}</Text>
+                                <Text fontSize={'md'}>Wallet Connected: {formatWalletAddress(address)}</Text>
+                                <Text fontSize={'md'} color="#8952e0">{token} Balance: {balance} {token}</Text>
                             </Flex>
                             <Flex direction={'column'} alignItems={'start'} gap={2}>
                                 <Text fontSize={'2xl'}>Amount</Text>
@@ -147,13 +183,13 @@ const CreateProject = () => {
                             <Flex direction={'column'} alignItems={'start'} gap={2}>
                                 <Text fontSize={'2xl'}>Deliverables</Text>
                                 <Text fontSize={'lg'} mt={'-2'}>What should payee deliver</Text>
-                                <Textarea h={'200px'} w={'640px'}></Textarea>
+                                <Textarea h={'200px'} w={'640px'} value={deliverable} onChange={(e) => setDeliverable(e.target.value)}/>
                             </Flex>
                             <Flex direction={'column'} alignItems={'start'} gap={2}>
                                 <Text fontSize={'2xl'}>Timeline</Text>
                                 <Text fontSize={'lg'} mt={'-2'}>By when should payee deliver the work?</Text>
                                 <Box bg={'#171717'} p={4}>
-                                    <DatePicker>
+                                    <DatePicker onChange={(v) => {setDeadline(v?.toString()??"");}}>
                                         <DatePickerCalendar />
                                         <DatePickerTimeField />
                                     </DatePicker>
@@ -163,8 +199,8 @@ const CreateProject = () => {
                             <Flex alignItems={"center"} justify={'end'} gap={4} w={'full'} mt={'8'}>
                                 <Button fontSize={'medium'} p={4} colorScheme="purple" onClick={() => setStep(3)}>{`<`} Previous</Button>
                                 <Button fontSize={'medium'} py={4} colorScheme="purple" onClick={() => {
-                                    setLink("abcdefgh12345678")
-                                }}>Invite Payee</Button>
+                                    submit();
+                                }} isLoading={spinner}>Invite Payee</Button>
                             </Flex>
                         </Flex>
                         <Modal isOpen={!!link} onClose={() => {

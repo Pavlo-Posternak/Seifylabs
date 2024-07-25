@@ -1,94 +1,70 @@
 import * as React from "react";
-import { Box, Button, Container, Flex, Image, Table, TableContainer, Tag, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
+import { Button, Container, Flex, Image, Table, TableContainer, Tag, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { SearchInput } from "@saas-ui/react";
 import { ButtonLink } from "components/button-link";
-
-const projects = [
-    {
-        wallet: "phantom",
-        name: "Token Launch (ICO)",
-        status: "In Escrow",
-        role: "Payer",
-        amount: 1200,
-        token: "SOL",
-        date: "2024-07-31"
-    },
-    {
-        wallet: "metamask",
-        name: "Smart Contract Deploy",
-        status: "Complete",
-        role: "Payer",
-        amount: 3,
-        token: "ETH",
-        date: "2024-07-22"
-    },
-    {
-        wallet: "phantom",
-        name: "Token Launch (ICO)",
-        status: "In Escrow",
-        role: "Payer",
-        amount: 1200,
-        token: "SOL",
-        date: "2024-07-31"
-    },
-    {
-        wallet: "metamask",
-        name: "Smart Contract Deploy",
-        status: "Complete",
-        role: "Payer",
-        amount: 3,
-        token: "ETH",
-        date: "2024-07-22"
-    },
-    {
-        wallet: "phantom",
-        name: "Token Launch (ICO)",
-        status: "In Escrow",
-        role: "Payer",
-        amount: 1200,
-        token: "SOL",
-        date: "2024-07-31"
-    },
-    {
-        wallet: "metamask",
-        name: "Smart Contract Deploy",
-        status: "Pending",
-        role: "Payer",
-        amount: 3,
-        token: "ETH",
-        date: "2024-07-22"
-    },
-    {
-        wallet: "phantom",
-        name: "Token Launch (ICO)",
-        status: "In Escrow",
-        role: "Payer",
-        amount: 1200,
-        token: "SOL",
-        date: "2024-07-31"
-    },
-    {
-        wallet: "metamask",
-        name: "Smart Contract Deploy",
-        status: "Complete",
-        role: "Payer",
-        amount: 3,
-        token: "ETH",
-        date: "2024-07-22"
-    },
-]
+import db from "utils/firestore";
+import { collection, doc, endBefore, getCountFromServer, getDocs, limit, orderBy, query, QueryDocumentSnapshot, QuerySnapshot, startAfter, startAt, where } from "firebase/firestore"; 
+import { ProjectType } from "utils/utils";
 
 const Dashboard = () => {
+    const [projects, setProjects] = React.useState<ProjectType[]>([]);
+    const [keyword, setKeyword] = React.useState('');
+    const [page, setPage] = React.useState(1);
+    const [pageSize, setPageSize] = React.useState(10);
+    const [count, setCount] = React.useState(0);
+    const [wholeCount, setWholeCount] = React.useState(0);
+    const [firstVisible, setFirstVisible] = React.useState<QueryDocumentSnapshot>();
+    const [lastVisible, setLastVisible] = React.useState<QueryDocumentSnapshot>();
+    const [q, setQuery] = React.useState(query(collection(db, 'projects'), orderBy("createdAt", 'desc'), limit(pageSize)));
+    // const [titleList, setTitleList] = React.useState<string[]>([]);
+    // const [filter, setFilter] = React.useState<string[]>([]);
+
+    const fetch = async () => {
+        getCountFromServer(collection(db, 'projects')).then(snapshot => setWholeCount(snapshot.data().count))
+        getDocs(q).then(querySnapshot => {
+            if (querySnapshot.empty) {
+                setProjects([]);
+            } else {
+                setFirstVisible(querySnapshot.docs[0]);
+                setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+                setCount(querySnapshot.docs.length);
+                setProjects(querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id} as ProjectType)))
+            }
+        });
+    }
+
+    React.useEffect(() => {
+        fetch();
+    }, [q])
+
+    // React.useEffect(() => {
+    //     getDocs(collection(db, "projects")).then(querySnapshot => {
+    //         setWholeCount(querySnapshot.docs.length);
+    //         setTitleList(querySnapshot.docs.map(doc => (doc.data()?.title)));
+    //     });
+    // }, [])
+
+    // React.useEffect(() => {
+    //     if (titleList.length === 0) return;
+    //     const filter = titleList.filter(title => title.toLowerCase().includes(keyword.toLowerCase()));
+    //     setWholeCount(filter.length);
+    //     if (filter.length === 0) {
+    //         setProjects([])
+    //         return;
+    //     }
+    //     setQuery(query(collection(db, 'projects'), where('title', 'in', filter), orderBy('createdAt', 'desc'), limit(pageSize)));
+    // }, [keyword])
+
     return (
         <Container px="8" py="32" maxW="container.2xl">
             <Flex direction="column" gap="8">
                 <Flex direction="row" alignItems="center" justify="space-between">
                     <Flex direction="row" alignItems="center" gap="12">
                         <Text fontSize="2xl" fontWeight="600">My Escrow Project</Text>
-                        <Tag size="sm" colorScheme="gray" borderRadius="12">Viewing 10 Projects</Tag>
+                        <Tag size="sm" colorScheme="gray" borderRadius="12">Viewing {count} Projects</Tag>
                     </Flex>
                     <Flex direction="row" alignItems="center" gap="8">
-                        <SearchInput />
+                        <SearchInput value={keyword} onChange={(e) => setKeyword(e.target.value)}/>
                         <ButtonLink href={"/create"} colorScheme="white" px="8">+ Create</ButtonLink>
                     </Flex>
                 </Flex>
@@ -111,13 +87,14 @@ const Dashboard = () => {
                                 }}>
                                     <Td borderBottom={"1px solid #514f56"}>
                                         <Flex align={'center'} gap={'4'}>
-                                            <Image src={`/static/images/${project.wallet}.png`} alt={project.wallet} width={10}></Image>
-                                            <Text>{project.name}</Text>
+                                            <Image src={`/static/images/${project.wallet.toLowerCase()}.png`} alt={project.wallet} width={10}></Image>
+                                            <Text>{project.title}</Text>
                                         </Flex>
                                     </Td>
                                     <Td borderInline={`1px solid #514f56`} borderBottom={"1px solid #514f56"}>
                                         <Tag colorScheme={
-                                                project.status.toLowerCase() == "complete"
+                                                !project.status ? "gray"
+                                                    : project.status.toLowerCase() == "complete"
                                                     ? "green"
                                                     : project.status.toLowerCase() == "in escrow"
                                                     ? "orange"
@@ -126,11 +103,11 @@ const Dashboard = () => {
                                             variant={`solid`}
                                             size="lg" 
                                             borderRadius={`full`}
-                                        >{project.status}</Tag>
+                                        >{project.status ?? "Pending"}</Tag>
                                     </Td>
-                                    <Td borderBottom={"1px solid #514f56"}>{project.role}</Td>
+                                    <Td borderBottom={"1px solid #514f56"}>{project.role ?? "Payer"}</Td>
                                     <Td borderInline={`1px solid #514f56`} borderBottom={"1px solid #514f56"}>{project.amount} {project.token}</Td>
-                                    <Td borderBottom={"1px solid #514f56"}>{new Date(project.date).toLocaleString("en-GB", {dateStyle: "short"})}</Td>
+                                    <Td borderBottom={"1px solid #514f56"}>{`${project.deadline}`.substring(0, 10)}</Td>
                                     <Td borderBottom={"1px solid #514f56"}><Tag colorScheme="gray" size="lg" borderRadius={16}>View</Tag></Td>
                                 </Tr>
                             ))}
@@ -139,11 +116,17 @@ const Dashboard = () => {
                 </TableContainer>
                 <Flex direction="row" alignItems="center" justify="space-between">
                     <Flex direction="row" alignItems="center" gap="12">
-                        <Text fontSize="md">Showing 1 to 10 of 42 results</Text>
+                        <Text fontSize="md">Showing {(page - 1) * pageSize + 1} to {(page - 1) * pageSize + count} of {wholeCount} results</Text>
                     </Flex>
                     <Flex direction="row" alignItems="center" gap="2">
-                        <Button colorScheme="white" px="3" variant="outline">{`<`} Previous</Button>
-                        <Button colorScheme="white" px="6" variant="outline">Next {`>`}</Button>
+                        <Button colorScheme="white" px="3" variant="outline" onClick={() => {
+                            setPage(page - 1);
+                            setQuery(query(collection(db, 'projects'), orderBy('createdAt', 'desc'), endBefore(firstVisible), limit(pageSize)));
+                        }} isDisabled={page <= 1}>{`<`} Previous</Button>
+                        <Button colorScheme="white" px="6" variant="outline" onClick={() => {
+                            setPage(page + 1);
+                            setQuery(query(collection(db, 'projects'), orderBy('createdAt', 'desc'), startAfter(lastVisible), limit(pageSize)));
+                        }} isDisabled={page * pageSize >= wholeCount}>Next {`>`}</Button>
                     </Flex>
                 </Flex>
             </Flex>
