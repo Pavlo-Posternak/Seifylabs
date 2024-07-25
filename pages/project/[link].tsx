@@ -1,10 +1,10 @@
 import { Box, Button, Container, Flex, Grid, GridItem, Heading, HStack, Image, Modal, ModalCloseButton, ModalContent, ModalOverlay, Text, Textarea } from "@chakra-ui/react";
 import * as React from "react";
 import { useRouter } from "next/router";
-import { CalendarDateTime, DatePicker, DatePickerCalendar, DatePickerTimeField, DateValue } from "@saas-ui/date-picker";
+import { DatePicker, DatePickerCalendar, DatePickerTimeField } from "@saas-ui/date-picker";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import db from "utils/firestore";
-import { collection, addDoc, getDoc, doc } from "firebase/firestore"; 
+import { getDoc, doc, setDoc } from "firebase/firestore"; 
 import { formatWalletAddress, ProjectType } from "utils/utils";
 import { parseDateTime } from "@saas-ui/date-picker";
 
@@ -12,10 +12,27 @@ const Project = () => {
 
     const router = useRouter();
     const [token, setToken] = React.useState('SOL');
-    // const [payee]
+    const [payeeAddress, setPayeeAddress] = React.useState('0xf76359e6a368b44269601354cB09d94365Cd70D7')
     const [open, setOpen] = React.useState(false);
     const [step, setStep] = React.useState(1);
     const [project, setProject] = React.useState<ProjectType>();
+    const [spinner, setSpinner] = React.useState(false);
+
+    const accept = async () => {
+        setSpinner(true);
+        const snapshot = await setDoc(doc(db, "projects", `${router.query.link}`), {
+            status: "Accepted",
+            payeeAddress
+        })
+        setStep(2);
+        setSpinner(false);
+    }
+    const reject = async () => {
+        const snapshot = await setDoc(doc(db, "projects", `${router.query.link}`), {
+            status: "Rejected",
+        })
+        router.push('/dashboard');
+    }
 
     React.useEffect(() => {
         async function fetch() {
@@ -48,7 +65,7 @@ const Project = () => {
                             </GridItem>
                             <GridItem>
                                 <Text fontSize={'2xl'}>Payee Wallet</Text>
-                                <Text fontSize={'lg'}>Wallet Connected: 8Y1s...YQ1Y</Text>
+                                <Text fontSize={'lg'}>Wallet Connected: {formatWalletAddress(payeeAddress)}</Text>
                             </GridItem>
                             <GridItem>
                                 <Text fontSize={'2xl'}>Amount to be paid</Text>
@@ -80,7 +97,7 @@ const Project = () => {
                 <Flex alignItems={"center"} justify={'end'} gap={4} w={'full'} mt={'8'}>
                     <Button fontSize={'medium'} p={4} colorScheme="purple" onClick={() => setOpen(true)}>Accept</Button>
                     <Button fontSize={'medium'} p={4} colorScheme="purple" onClick={() => {
-                        router.push("/dashboard")
+                        reject();
                     }}>Reject</Button>
                 </Flex>
                 <Modal isOpen={open} onClose={() => {
@@ -118,7 +135,9 @@ const Project = () => {
                                     <Text fontSize={'md'}>Wallet Connected: 8Y1s...YQ1Y</Text>
                                     <Text fontSize={'md'} color="#8952e0">{token} Balance: 145 {token}</Text>
                                 </Flex>
-                                <Button fontSize={'medium'} p={4} colorScheme="purple" onClick={() => setStep(2)}>Accept</Button>
+                                <Button fontSize={'medium'} p={4} colorScheme="purple" onClick={() => {
+                                    accept();
+                                }} isLoading={spinner}>Accept</Button>
                             </Flex>
                         ) : (
                             <Flex direction={'column'} alignItems={"center"} gap={6} m={10}>

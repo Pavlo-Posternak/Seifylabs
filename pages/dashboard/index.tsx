@@ -97,7 +97,13 @@ const Dashboard = () => {
                                                     : project.status.toLowerCase() == "complete"
                                                     ? "green"
                                                     : project.status.toLowerCase() == "in escrow"
-                                                    ? "orange"
+                                                    ? "teal"
+                                                    : project.status.toLowerCase() == "accepted"
+                                                    ? "cyan"
+                                                    : project.status.toLowerCase() == "rejected"
+                                                    ? "pink"
+                                                    : project.status.toLowerCase() == "failed"
+                                                    ? "red"
                                                     : "gray"
                                             }
                                             variant={`solid`}
