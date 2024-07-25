@@ -21,6 +21,7 @@ const Project = () => {
     const accept = async () => {
         setSpinner(true);
         const snapshot = await setDoc(doc(db, "projects", `${router.query.link}`), {
+            ...project,
             status: "Accepted",
             payeeAddress
         })
@@ -29,6 +30,7 @@ const Project = () => {
     }
     const reject = async () => {
         const snapshot = await setDoc(doc(db, "projects", `${router.query.link}`), {
+            ...project,
             status: "Rejected",
         })
         router.push('/dashboard');
@@ -38,7 +40,7 @@ const Project = () => {
         async function fetch() {
             if (router.query.link) {
                 const querySnapshot = await getDoc(doc(db, "projects", `${router.query.link}`));
-                setProject({...querySnapshot.data(), id: querySnapshot.id} as ProjectType);
+                setProject({...querySnapshot.data()} as ProjectType);
             }
         }
         fetch();
