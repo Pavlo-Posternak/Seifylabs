@@ -11,7 +11,7 @@ import { parseDateTime } from "@saas-ui/date-picker";
 const Project = () => {
 
     const router = useRouter();
-    const [token, setToken] = React.useState('SOL');
+    const [balance, setBalance] = React.useState(0);
     const [payeeAddress, setPayeeAddress] = React.useState('0xf76359e6a368b44269601354cB09d94365Cd70D7')
     const [open, setOpen] = React.useState(false);
     const [step, setStep] = React.useState(1);
@@ -19,6 +19,7 @@ const Project = () => {
     const [spinner, setSpinner] = React.useState(false);
 
     const accept = async () => {
+        if (!payeeAddress) return;
         setSpinner(true);
         const snapshot = await setDoc(doc(db, "projects", `${router.query.link}`), {
             ...project,
@@ -126,7 +127,7 @@ const Project = () => {
                                             onClick={() => {}}
                                         ><Text fontSize={'lg'} color={'black'}>Phantom</Text></Button>
                                         <Button
-                                            leftIcon={<Image src="/static/images/metamask.png" h={8} alt="MetaMask"/>} 
+                                            leftIcon={<Image src="/static/images/metamask.png" h={8} alt="Metamask"/>} 
                                             size={'lg'}
                                             p={4}
                                             colorScheme="whiteAlpha"
@@ -134,8 +135,8 @@ const Project = () => {
                                             onClick={() => {}}
                                         ><Text fontSize={'lg'} color={'black'}>Metamask</Text></Button>
                                     </HStack>
-                                    <Text fontSize={'md'}>Wallet Connected: 8Y1s...YQ1Y</Text>
-                                    <Text fontSize={'md'} color="#8952e0">{token} Balance: 145 {token}</Text>
+                                    <Text fontSize={'md'}>Wallet Connected: {formatWalletAddress(payeeAddress)}</Text>
+                                    <Text fontSize={'md'} color="#8952e0">{project?.token} Balance: {balance} {project?.token}</Text>
                                 </Flex>
                                 <Button fontSize={'medium'} p={4} colorScheme="purple" onClick={() => {
                                     accept();
