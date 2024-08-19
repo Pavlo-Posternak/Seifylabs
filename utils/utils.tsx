@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 
 export const formatWalletAddress = (address: string | undefined, length : number = 4) => {
     if (!address) return null;
@@ -21,4 +22,49 @@ export type ProjectType = {
     payer: string | null | undefined,
     payee: string | null | undefined,
     payeeAddress: string | null | undefined
+}
+
+export const getSolanaProvider = () => {
+    if ('phantom' in window) {
+        const provider = window.phantom?.solana;
+    
+        if (provider?.isPhantom) {
+            return provider;
+        }
+    }
+    return null;
+}
+
+export const getEthereumProviderForPhantom = () => {
+    if ('phantom' in window) {
+        const provider = window.phantom?.ethereum;
+
+        if (provider?.isPhantom) {
+            return provider;
+        }
+    }
+    return null;
+}
+
+export const connectPhantomETH = async () => {
+    const provider = getEthereumProviderForPhantom();
+    try {
+        const accounts = await provider.request({method: 'eth_requestAccounts'});
+        console.log("phantom accounts", accounts);
+        return accounts;
+    } catch (e) {
+        console.log("User rejected the request!")
+        return null;
+    }
+}
+
+export const signinWithPhantom = async () => {
+    const provider = getEthereumProviderForPhantom();
+    try {
+        const acc = await provider.request({method: 'personal_sign'});
+        console.log("", acc);
+    } catch (e) {
+        console.log("User rejected the request!")
+        return null;
+    }
 }

@@ -40,11 +40,11 @@ const siteConfig = {
         id: 'faq',
         label: 'FAQ',
       },
-      {
-        label: 'Connect Wallet',
-        href: '/signup',
-        variant: 'primary',
-      },
+      // {
+      //   label: 'Connect Wallet',
+      //   href: '/signup',
+      //   variant: 'primary',
+      // },
     ],
   },
   footer: {

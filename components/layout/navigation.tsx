@@ -14,6 +14,7 @@ import { MobileNavContent } from "components/mobile-nav";
 import { useDisclosure, useUpdateEffect } from "@chakra-ui/react";
 
 import ThemeToggle from "./theme-toggle";
+import Profile from "components/profile";
 
 const Navigation: React.FC = () => {
   const mobileNav = useDisclosure();
@@ -35,17 +36,14 @@ const Navigation: React.FC = () => {
 
   return (
     <HStack spacing="2" flexShrink={0}>
-      {siteConfig.header.links.map(({ href, id, ...props }, i) => {
+      {siteConfig.header.links.map(({ id, ...props }, i) => {
         return (
           <NavLink
             display={["none", null, "block"]}
-            href={href || `/#${id}`}
+            href={`/#${id}`}
             key={i}
             isActive={
-              !!(
-                (id && activeId === id) ||
-                (href && !!router.asPath.match(new RegExp(href)))
-              )
+                !!(id && activeId === id)
             }
             {...props}
           >
@@ -54,6 +52,8 @@ const Navigation: React.FC = () => {
         );
       })}
 
+      <Profile />
+      
       <ThemeToggle />
 
       <MobileNavButton
