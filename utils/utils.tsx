@@ -26,7 +26,7 @@ export type ProjectType = {
 
 export const getSolanaProvider = () => {
     if ('phantom' in window) {
-        const provider = window.phantom?.solana;
+        const provider = (window as any).phantom?.solana;
     
         if (provider?.isPhantom) {
             return provider;
@@ -37,7 +37,7 @@ export const getSolanaProvider = () => {
 
 export const getEthereumProviderForPhantom = () => {
     if ('phantom' in window) {
-        const provider = window.phantom?.ethereum;
+        const provider = (window as any).phantom?.ethereum;
 
         if (provider?.isPhantom) {
             return provider;

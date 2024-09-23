@@ -40,7 +40,6 @@ const Navigation: React.FC = () => {
         return (
           <NavLink
             display={["none", null, "block"]}
-            href={`/#${id}`}
             key={i}
             isActive={
                 !!(id && activeId === id)

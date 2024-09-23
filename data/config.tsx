@@ -35,10 +35,12 @@ const siteConfig = {
       {
         id: 'features',
         label: 'Features',
+        href: '/#features'
       },
       {
         id: 'faq',
         label: 'FAQ',
+        href: '/#faq'
       },
       // {
       //   label: 'Connect Wallet',
